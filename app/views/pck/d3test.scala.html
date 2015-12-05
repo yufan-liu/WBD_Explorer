@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>WBD explorer</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+
+            <!-- Bootstrap -->
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="@routes.Assets.at("javascripts/jquery-1.11.3/jquery.min.js")"></script>
+            <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+        <script src="@routes.Assets.at("javascripts/d3.v3.min.js")"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>World Bank Data Explorer</h1>
+            <ul class="nav nav-pills">
+                <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+                <li><a data-toggle="pill" href="#menu1">GDP</a></li>
+                <li><a data-toggle="pill" href="#menu2">GDP Growth</a></li>
+                <li><a data-toggle="pill" href="#menu3">GDP Per Capital</a></li>
+            </ul>
+
+            <div id="home" class="tab-pane fade in active">
+                <h3>HOME</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>GDP for major countries</p>
+                <div id="empty"></div>
+            </div>
+            <div id="menu1" class="tab-pane fade">
+                <h3>Menu 1</h3>
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+            <div id="menu2" class="tab-pane fade">
+                <h3>Menu 2</h3>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+            </div>
+            <div id="menu3" class="tab-pane fade">
+                <h3>Menu 3</h3>
+                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            </div>
+        </div>
+
+        <script>
+        var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom,
+                yAxisLenth = 77.5;
+
+        var x = d3.scale.linear().range([0, width]);
+
+        var y = d3.scale.linear().range([height, 0]);
+
+        var xAxis = d3.svg.axis()
+                .scale(x)
+                .tickFormat(d3.format("d"))
+                .ticks(10)
+                .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+        var line = d3.svg.line()
+                .x(function(d) { return x(d.year); })
+                .y(function(d) { return y(d.value); });
+
+        var svg = d3.select("#empty").append("svg")
+//                .attr("width", width + margin.left + margin.right)
+                .attr("width", width + margin.left + margin.right + yAxisLenth)
+                .attr("height", height + margin.top + margin.bottom)
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        d3.json("/indi-value/NY.GDP.PCAP.CD/CHN", function(error, data) {
+            if (error) throw error;
+
+            // After data is loaded, can we calculate the domain for xAxis and yAxis.
+            x.domain(d3.extent(data, function(d) { return d.year; }));
+            y.domain(d3.extent(data, function(d) { return d.value; }));
+
+            svg.append("g")
+                    .attr("class", "x axis")
+//                    .attr("transform", "translate(0," + height + ")")
+                    .attr("transform", "translate(" + (margin.left + yAxisLenth) + "," + height + ")")
+                    .call(xAxis)
+
+            svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis)
+                    .append("text")
+//                    .attr("transform", "rotate(-90)")
+                    .attr("transform", "rotate(-90) translate(" + 2*(margin.left + yAxisLenth) + "," + 0 + ")")
+                    .attr("y", 6)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .text("Price ($)");
+
+            svg.append("path")
+                    .datum(data)
+                    .attr("class", "line")
+                    .attr("transform", "translate(" + (margin.left + yAxisLenth) + "," + 0 + ")")
+                    .attr("d", line);
+        });
+        </script>
+    </body>
+</html>

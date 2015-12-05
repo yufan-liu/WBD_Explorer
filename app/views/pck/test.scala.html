@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>WBD explorer</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+
+            <!-- Bootstrap -->
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="@routes.Assets.at("javascripts/jquery-1.11.3/jquery.min.js")"></script>
+            <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+        <script src="@routes.Assets.at("javascripts/d3.v3.min.js")"></script>
+    </head>
+    <body>
+            <!-- NavBar -->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <img alt="Brand" height="24" width="24" src="@routes.Assets.at("images/icon.png")"/></a>
+                </div>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#"><p>WBD explorer</p></a>
+                </div>
+            </div> <!-- /.container-fluid -->
+        </nav>
+
+        <div class="row">
+            <script>
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.linear().range([0, width]);
+
+var y = d3.scale.linear().range([height, 0]);
+
+var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+var line = d3.svg.line()
+        .x(function(d) { return x(d.year); })
+        .y(function(d) { return y(d.value); });
+
+var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("/indi-value/NY.GDP.PCAP.CD/CHN", function(error, data) {
+    if (error) throw error;
+
+    x.domain(d3.extent(data, function(d) { return d.year; }));
+    y.domain(d3.extent(data, function(d) { return d.value; }));
+
+
+    svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+    svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Price ($)");
+
+    svg.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line);
+});
+
+</script>
+        </div>
+    </body>
+</html>

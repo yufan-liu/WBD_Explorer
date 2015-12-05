@@ -1,0 +1,129 @@
+@(content: Html)
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <script>
+            function addGraph(node, url, full_width, full_height) {
+                var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                        width = full_width - margin.left - margin.right,
+                        height = full_height - margin.top - margin.bottom;
+
+                var x = d3.scale.linear().range([0, width]);
+
+                var y = d3.scale.linear().range([height, 0]);
+
+                var xAxis = d3.svg.axis()
+                        .scale(x)
+                        .tickFormat(d3.format("d"))
+                        .ticks(5)
+                        .orient("bottom");
+
+                var yAxis = d3.svg.axis()
+                        .scale(y)
+                        .orient("left");
+
+                var line = d3.svg.line()
+                        .x(function(d) { return x(d.year); })
+                        .y(function(d) { return y(d.value); });
+
+                var svg = d3.select(node).append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                d3.json(url, function(error, data) {
+                    if (error) throw error;
+
+                    // After data is loaded, can we calculate the domain for xAxis and yAxis.
+                    x.domain(d3.extent(data, function(d) { return d.year; }));
+                    y.domain(d3.extent(data, function(d) { return d.value; }));
+
+                    svg.append("g")
+                            .attr("class", "x axis")
+                            .attr("transform", "translate(" + margin.left + "," + height + ")")
+                            .call(xAxis);
+
+                    svg.append("g")
+                            .attr("class", "y axis")
+                            .call(yAxis)
+                            .append("text")
+                            .attr("transform", "rotate(-90) translate(" + 2*margin.left + "," + 0 + ")")
+                            .attr("y", 6)
+                            .attr("dy", ".71em")
+                            .style("text-anchor", "end")
+                            .text("Price ($)");
+
+                    svg.append("path")
+                            .datum(data)
+                            .attr("class", "line")
+                            .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+                            .attr("d", line);
+                });
+            }
+    </script>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+        <title>WBD Explorer</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="@routes.Assets.at("javascripts/jquery-1.11.3/jquery.min.js")"></script>
+            <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+            <!-- Add d3js library -->
+        <script src="@routes.Assets.at("javascripts/d3.v3.min.js")"></script>
+            <!-- Bootstrap -->
+        <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
+
+            <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+            <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+            <!--[if lt IE 9]>
+      <script src="@routes.Assets.at("javascripts/html5shiv.min.js")"></script>
+      <script src="@routes.Assets.at("javascripts/respond.min.js")"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="navbar navbar-inverse ">
+            <div class="container">
+                <div class="navbar-collapse collapse">
+                    <a class="navbar-brand" href="/">WBD Explorer</a>
+                    <ul class="nav navbar-nav">
+                        <li id=""><a href="/overview">Overview</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                Indicators
+                                <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/gdp">GDP</a></li>
+                                <li><a href="/gdp-growth">GDP Growth</a></li>
+                                <li><a href="/gdp-per-capital">GDP Per Capital</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul id="navBar-right" class="nav navbar-nav navbar-right">
+                        <li id=""><a href="/about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        @content
+
+        <div class="container">
+            <hr>
+        </div>
+        <footer>
+            <p class="text-center">Copyright ©
+                |  <a href="http://www.ust.hk/">HKUST<a>
+                |  <a href="https://www.sengpp.ust.hk/programs/it/en/">MSc(IT)</a>
+                |  <a href="mailto:yliude@@connect.ust.hk?Subject=Greeting from WDB Explorer website user." target="_top">Patrick Liu (Student ID. 20296796)</a>
+            </p>
+        </footer>
+    </body>
+</html>

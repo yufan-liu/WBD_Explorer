@@ -1,0 +1,29 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Map static resources from the /public folder to the /assets URL path
+GET        /assets/*file                  controllers.Assets.at(path="/public", file)
+
+# Test
+GET        /test                          controllers.Application.test
+GET        /d3test                        controllers.Application.d3test
+GET        /db                            controllers.Application.db
+GET        /clients/:id                   controllers.Application.getId(id: Long)
+GET        /clients/:indi/:ctry           controllers.Application.get2Params(indi: String, ctry: String)
+GET        /tt                            controllers.Application.tt
+GET        /indi_tt                       controllers.Application.indiTest
+
+# World bank data explorer
+# Part 1. Json (Web-service)
+GET        /country-list                  controllers.Application.allCountries
+GET        /indicator-list                controllers.Application.allIndicators
+GET        /indi-value/:indi/:ctry        controllers.Application.indiValue(indi: String, ctry: String)
+
+# Part 2. Html
+GET        /                              controllers.Application.index
+GET        /about                         controllers.Application.about
+GET        /overview                      controllers.Application.overview
+GET        /gdp                           controllers.Application.gdp
+GET        /gdp-growth                    controllers.Application.gdpGrowth
+GET        /gdp-per-capital               controllers.Application.gdpPerCapital

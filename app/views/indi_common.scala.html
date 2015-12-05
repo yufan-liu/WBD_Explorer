@@ -1,0 +1,55 @@
+@(indicator: String, baseUrl: String)
+@common {
+    <script type='text/javascript'>
+            $(window).load(function(){
+                $(function(){
+                    $("#country-select li").click(function () {
+                        console.log($(this).text());
+
+                        var country = $(this).text();
+                        var map = {};
+                        map["China"] = "CHN";
+                        map["Japan"] = "JPN";
+                        map["Korea"] = "KOR";
+                        map["Brazil"] = "BRA";
+                        map["USA"] = "USA";
+                        map["Norway"] = "NOR";
+
+                        $("svg").remove();
+                        // "/indi-value/NY.GDP.MKTP.CD/CHN"
+                        $("#current-country").text(country);
+                        addGraph("#display", "/indi-value/@baseUrl/" + map[country], 800, 500)
+                    });
+                });
+                addGraph("#display", "/indi-value/@baseUrl/CHN", 800, 500);
+                $("#current-country").text("China");
+            });
+    </script>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <h4>@indicator</h4>
+                <h6>Please select country</h6>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Countries
+                        <span class="caret"></span>
+                    </button>
+                    <ul id="country-select" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a href="#">China</a></li>
+                        <li><a href="#">Japan</a></li>
+                        <li><a href="#">Korea</a></li>
+                        <li><a href="#">Brazil</a></li>
+                        <li><a href="#">USA</a></li>
+                        <li><a href="#">Norway</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="display" class="col-md-10">
+                <h2>@indicator by country</h2>
+                <h3 id="current-country"></h3>
+            </div>
+        </div>
+    </div>
+}

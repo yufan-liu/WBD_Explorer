@@ -1,0 +1,42 @@
+@common {
+    <div class="container">
+        <div class="page-header">
+            <h1>Country Indicators Overview <small>use china as example</small></h1>
+        </div>
+        <div class="row">
+            <div class="col-md-6" id="node1">
+                <h2>GDP (current US$)</h2>
+            </div>
+            <div class="col-md-6" id="node2">
+                <h2>GDP growth (annual %)</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6" id="node3">
+                <h2>GDP per capita (current US$)</h2>
+            </div>
+            <div class="col-md-6" id="node4">
+                <h2>Inflation, consumer prices (annual %)</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6" id="node5">
+                <h2>Imports of goods and services</h2>
+                <h2>(% of GDP)</h2>
+            </div>
+            <div class="col-md-6" id="node6">
+                <h2>Exports of goods and services</h2>
+                <h2>(% of GDP)</h2>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            addGraph("#node1", "/indi-value/NY.GDP.MKTP.CD/CHN", 400, 400);
+            addGraph("#node2", "/indi-value/NY.GDP.MKTP.KD.ZG/CHN", 400, 400);
+            addGraph("#node3", "/indi-value/NY.GDP.PCAP.CD/CHN", 400, 400);
+            addGraph("#node4", "/indi-value/FP.CPI.TOTL.ZG/CHN", 400, 400);
+            addGraph("#node5", "/indi-value/NE.IMP.GNFS.ZS/CHN", 400, 400);
+            addGraph("#node6", "/indi-value/NE.EXP.GNFS.ZS/CHN", 400, 400);
+    </script>
+}
